@@ -35,12 +35,6 @@ This project demonstrates intelligent workflow automation between agents using *
 4. **Backend Execution** → FastAPI processes requests and returns responses  
 5. **Data Management** → Pandas reads/writes appointment data via CSV  
 
----
-
-## 🩺 Example Use Case
-
-🎥 **Watch the demo video:**  
-[Medical Appointment System - YouTube](https://www.youtube.com/watch?v=3ZauAhbTyBE)
 
 ---
 
