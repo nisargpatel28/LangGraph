@@ -18,8 +18,8 @@ def get_requirements() -> List[str]:
 setup(
     name="doctor-appointment-agentic",
     version="0.0.1",
-    author="Sunny Savita",
-    author_email="snshrivas3365@gmail.com",
+    author="Nisarg Patel",
+    author_email="patelnisarg.pn@gmail.com",
     packages=find_packages(),
     install_requires=get_requirements(),
     python_requires=">=3.10",  # Ensure compatible Python version
