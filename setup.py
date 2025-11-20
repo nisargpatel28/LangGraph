@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 from typing import List
 
-
+# Get Requirements file changes
 def get_requirements() -> List[str]:
     try:
         with open('requirements.txt', 'r') as file:
