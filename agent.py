@@ -11,7 +11,7 @@ from prompt_library.prompt import system_prompt
 from utils.llms import LLMModel
 from toolkit.toolkits import *
 
-
+# Router class with TypedDict for literal
 class Router(TypedDict):
     next: Literal["information_node", "booking_node", "FINISH"]
     reasoning: str
