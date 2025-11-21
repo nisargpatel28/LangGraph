@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 
+# Run server from steps.txt to enable API
 API_URL = "http://127.0.0.1:8003/execute"
 
 st.title("🩺 Doctor Appointment System")
