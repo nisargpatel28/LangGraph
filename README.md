@@ -1,3 +1,45 @@
+# Agentic Image Flow (LangGraph style)
+
+This repo contains a minimal, local LangGraph-like SDK and an example agentic
+flow that: 1) creates content from a prompt, 2) generates an image from the
+content, 3) post-processes that image (resize + watermark), and 4) generates
+concise alt text.
+
+Quick start
+
+1. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Set your OpenAI API key in environment:
+
+Windows (PowerShell):
+
+```powershell
+$env:OPENAI_API_KEY = "sk-..."
+```
+
+Linux / macOS:
+
+```bash
+export OPENAI_API_KEY="sk-..."
+```
+
+3. Run the flow:
+
+```bash
+python run_flow.py --prompt "A vintage poster of a robot baker" --outdir output
+```
+
+Outputs will be written into the `output` directory.
+
+Notes
+- This is a minimal example to demonstrate an agentic flow. Replace the
+  OpenAI calls or extend nodes as needed.
+- If you want to swap in a different image-generation provider, modify
+  `flows/agentic_image_flow.py` in the `generate_image` node.
 # 🏥 Medical Appointment System using LangGraph, FastAPI, and Streamlit
 
 A **multi-agent, AI-powered Doctor Appointment Booking System** designed to handle user queries about doctor availability, specialization, and appointment scheduling.  
