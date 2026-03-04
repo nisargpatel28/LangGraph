@@ -13,8 +13,9 @@ class Node:
 
     def run(self, context: Dict[str, Any]) -> Dict[str, Any]:
         out = self.func(context)
-        if not isinstace(out, dict):
-            raise TypeError(f"Node {self.name} must return a dict, got {type(out)}")
+        if not isinstance(out, dict):
+            raise TypeError(
+                f"Node {self.name} must return a dict, got {type(out)}")
         context.update(out)
         return out
 
