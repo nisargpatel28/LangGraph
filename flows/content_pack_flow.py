@@ -9,3 +9,27 @@ import openai
 from models.content_pack import ContentPack
 from storage.artifact_store import ArtifactStore
 from flows.agentic_image_flow import make_flow
+
+TextGenerator = Callable[[str], str]
+ImageFlow = Callable[[Dict[str, Any]], Dict[str, Any]]
+
+
+def _parse_metadata(text: str) -> Dict[str, Any]:
+    """Parse model metadata while tolerating fenced JSON responses."""
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = cleaned.strip("`").strip()
+        if cleaned.startswith("json"):
+            cleaned = cleaned[4:].strip()
+    try:
+        metadata = json.loads(cleaned)
+    except (TypeError, json.JSONDecodeError):
+        return {"caption": cleaned, "hashtags": []}
+
+    hashtags = metadata.get("hashtags", [])
+    if isinstance(hashtags, str):
+        hashtags = [tag.strip() for tag in hashtags.split() if tag.strip()]
+    return {
+        "caption": str(metadata.get("caption", "")),
+        "hashtags": [str(tag) for tag in hashtags],
+    }
