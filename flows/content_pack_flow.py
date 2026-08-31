@@ -33,3 +33,19 @@ def _parse_metadata(text: str) -> Dict[str, Any]:
         "caption": str(metadata.get("caption", "")),
         "hashtags": [str(tag) for tag in hashtags],
     }
+
+
+def _openai_text_generator(prompt: str) -> str:
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": "Create social media metadata and respond only with JSON.",
+            },
+            {"role": "user", "content": prompt},
+        ],
+        max_tokens=180,
+        temperature=0.7,
+    )
+    return response["choices"][0]["message"]["content"]
