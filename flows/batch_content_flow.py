@@ -29,3 +29,32 @@ def _build_batch_manifest(packs: List[Dict[str, Any]], output_dir: str) -> Dict[
         json.dump(manifest, handle, indent=2)
     manifest["batch_manifest_path"] = batch_manifest_path
     return manifest
+
+def run_batch_content_packs(
+    prompts: Iterable[str],
+    output_dir: str = "output",
+    watermark: str = "LangGraph",
+    pack_runner: Optional[PackRunner] = None,
+) -> Dict[str, Any]:
+    """Create a batch of content packs and write a summary manifest."""
+    prompt_list = [prompt.strip() for prompt in prompts if str(prompt).strip()]
+    if not prompt_list:
+        raise ValueError("prompts must contain at least one non-empty value")
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    if pack_runner is None:
+        from flows.content_pack_flow import run_content_pack
+
+        def pack_runner(prompt: str, output_dir: str, watermark: str, **kwargs):
+            return run_content_pack(prompt, output_dir=output_dir, watermark=watermark, **kwargs)
+
+    results: List[Dict[str, Any]] = []
+    for prompt in prompt_list:
+        result = pack_runner(prompt=prompt, output_dir=output_dir, watermark=watermark)
+        results.append(result)
+
+    manifest = _build_batch_manifest(results, output_dir)
+    return {"packs": results, "batch_manifest_path": manifest["batch_manifest_path"], "total_packs": len(results)}
+
+
