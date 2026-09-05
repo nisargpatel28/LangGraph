@@ -58,3 +58,13 @@ def run_batch_content_packs(
     return {"packs": results, "batch_manifest_path": manifest["batch_manifest_path"], "total_packs": len(results)}
 
 
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Generate multiple content packs from a list of prompts.")
+    parser.add_argument("--prompts", nargs="+", required=True, help="One or more creative prompts")
+    parser.add_argument("--outdir", default="output", help="Output directory")
+    parser.add_argument("--watermark", default="LangGraph", help="Watermark text")
+    args = parser.parse_args()
+
+    run_batch_content_packs(args.prompts, output_dir=args.outdir, watermark=args.watermark)
