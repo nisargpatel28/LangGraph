@@ -1,5 +1,6 @@
 """Command-line browser and exporter for generated content packs."""
 import argparse
+import csv
 import html
 import json
 import os
@@ -42,6 +43,21 @@ def build_stats(packs: List[Dict[str, Any]]) -> Dict[str, Any]:
         "with_images": sum(bool(pack.get("image_path")) for pack in packs),
         "hashtags": dict(tag_counts.most_common()),
     }
+
+
+def write_csv_export(packs: List[Dict[str, Any]], csv_path: str) -> str:
+    """Write selected pack metadata as a spreadsheet-friendly CSV file."""
+    destination = Path(csv_path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    fields = ["pack_id", "prompt", "caption", "alt_text", "hashtags", "image_path", "manifest_path"]
+    with destination.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        for pack in packs:
+            row = {field: pack.get(field, "") for field in fields}
+            row["hashtags"] = " ".join(pack.get("hashtags", []))
+            writer.writerow(row)
+    return str(destination)
 
 
 def write_html_report(packs: List[Dict[str, Any]], report_path: str) -> str:
@@ -88,6 +104,7 @@ def main() -> None:
     parser.add_argument("--sort", choices=("pack_id", "prompt", "caption"), default="pack_id")
     parser.add_argument("--limit", type=int, help="Limit the number of displayed packs")
     parser.add_argument("--export", help="Optional ZIP path for matching packs")
+    parser.add_argument("--csv", dest="csv_path", help="Optional CSV path for matching pack metadata")
     parser.add_argument("--report", help="Optional HTML gallery path for matching packs")
     parser.add_argument("--stats", action="store_true", help="Show summary statistics")
     parser.add_argument("--format", choices=("text", "json"), default="text", help="Output format")
@@ -104,6 +121,8 @@ def main() -> None:
     result["total"] = len(result["packs"])
     if args.stats:
         result["stats"] = build_stats(result["packs"])
+    if args.csv_path:
+        result["csv_path"] = write_csv_export(result["packs"], args.csv_path)
     if args.export and result["packs"]:
         exported = browse_library(
             args.root,
@@ -124,6 +143,8 @@ def main() -> None:
         print(f"- {pack['pack_id']}: {pack['prompt']}")
     if result.get("export_path"):
         print(f"Exported to: {result['export_path']}")
+    if result.get("csv_path"):
+        print(f"CSV written to: {result['csv_path']}")
     if result.get("report_path"):
         print(f"Report written to: {result['report_path']}")
 
